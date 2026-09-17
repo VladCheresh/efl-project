@@ -1,0 +1,33 @@
+# Виртуальное окружение
+venv/
+.venv/
+
+# Переменные окружения / секреты
+.env
+
+# Кэш Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Линтеры и проверка типов
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Django
+db.sqlite3
+media/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Локальные бэкапы / фикстуры
+organizations_backup.json
