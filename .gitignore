@@ -31,3 +31,7 @@ Thumbs.db
 
 # Локальные бэкапы / фикстуры
 organizations_backup.json
+
+# Фронтенд
+node_modules/
+dist/
