@@ -7,7 +7,7 @@ from .filters import OrganizationFilter
 
 
 class OrganizationViewSet(ReadOnlyModelViewSet):
-    queryset = Organization.objects.all()
+    queryset = Organization.objects.select_related('category')
     serializer_class = OrganizationSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = OrganizationFilter

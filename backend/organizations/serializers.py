@@ -10,14 +10,21 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class OrganizationSerializer(serializers.ModelSerializer):
     is_favorite = serializers.SerializerMethodField()
+    category_name = serializers.CharField(source='category.name',
+                                          read_only=True)
 
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'category', 'address', 'phone', 'description',
-                  'is_favorite']
+        fields = ['id', 'name', 'category', 'category_name', 'address',
+                  'phone', 'description', 'is_favorite']
 
     def get_is_favorite(self, obj):
         request = self.context.get('request')
-        if request and request.user.is_authenticated:
-            return obj.favorited_by.filter(user=request.user).exists()
-        return False
+        if not (request and request.user.is_authenticated):
+            return False
+        if not hasattr(request, '_favorite_ids'):
+            request._favorite_ids = set(
+                request.user.favorites.values_list('organization_id',
+                                                   flat=True)
+            )
+        return obj.id in request._favorite_ids
