@@ -27,8 +27,16 @@ function FavoriteButton({ organizationId, isFavorite, favoriteId, onChange }) {
     }
   }
 
-  return (
-    <button onClick={handleClick} disabled={pending}>
+    return (
+      <button
+        type="button"
+        className={`favorite-btn${isFavorite ? ' is-active' : ''}`}
+        onClick={handleClick}
+        disabled={pending}
+        aria-pressed={isFavorite}
+        aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+        title={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+    >
       {isFavorite ? '♥' : '♡'}
     </button>
   )

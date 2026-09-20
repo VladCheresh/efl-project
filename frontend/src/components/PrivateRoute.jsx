@@ -5,7 +5,7 @@ function PrivateRoute({ children }) {
   const { user, loading } = useAuth()
 
   if (loading) {
-    return <p>Загрузка...</p>
+    return <p className="state-message">Загрузка...</p>
   }
 
   if (!user) {

@@ -38,25 +38,42 @@ function OrganizationDetailPage() {
     setFavoriteId(newFavoriteId)
   }
 
-  if (loading) return <p>Загрузка...</p>
-  if (error) return <p>{error}</p>
+  if (loading) return <p className="state-message">Загрузка...</p>
+  if (error) return <p className="state-message state-error">{error}</p>
 
   return (
-    <div>
-      <Link to="/">← Назад в каталог</Link>
-      <h1>{org.name}</h1>
-      <p>Категория: {org.category_name}</p>
-      <p>Адрес: {org.address}</p>
-      <p>
-        Телефон: <a href={`tel:${org.phone}`}>{org.phone}</a>
-      </p>
-      <p>{org.description}</p>
-      <FavoriteButton
-        organizationId={org.id}
-        isFavorite={org.is_favorite}
-        favoriteId={favoriteId}
-        onChange={handleFavoriteChange}
-      />
+    <div className="detail">
+      <Link to="/" className="back-link">
+        ← Назад в каталог
+      </Link>
+
+      <div className="detail-header">
+        <div>
+          {org.category_name && <span className="badge">{org.category_name}</span>}
+          <h1 className="detail-title">{org.name}</h1>
+        </div>
+        <FavoriteButton
+          organizationId={org.id}
+          isFavorite={org.is_favorite}
+          favoriteId={favoriteId}
+          onChange={handleFavoriteChange}
+        />
+      </div>
+
+      <dl className="info-list">
+        <div className="info-row">
+          <dt>Адрес</dt>
+          <dd>{org.address}</dd>
+        </div>
+        <div className="info-row">
+          <dt>Телефон</dt>
+          <dd>
+            <a href={`tel:${org.phone}`}>{org.phone}</a>
+          </dd>
+        </div>
+      </dl>
+
+      <p className="detail-description">{org.description}</p>
     </div>
   )
 }

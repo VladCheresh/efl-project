@@ -80,39 +80,52 @@ function CatalogPage() {
     })
   }
 
-  return (
+    return (
     <div>
-      <h1>Евпатория: ВДЖ</h1>
+      <section className="page-hero">
+        <h1>Каталог организаций</h1>
+        <p className="page-subtitle">
+          Государственные и муниципальные организации города Евпатория: адреса, телефоны, категории
+        </p>
+      </section>
 
-      <SearchBar value={search} onChange={setSearch} />
-      <CategoryFilter categories={categories} value={category} onChange={setCategory} />
+      <div className="toolbar">
+        <SearchBar value={search} onChange={setSearch} />
+        <CategoryFilter categories={categories} value={category} onChange={setCategory} />
 
-      {user && (
-        <label>
-          <input
-            type="checkbox"
-            checked={onlyFavorites}
-            onChange={(event) => setOnlyFavorites(event.target.checked)}
-          />
-          Только избранное
-        </label>
-      )}
+        {user && (
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={onlyFavorites}
+              onChange={(event) => setOnlyFavorites(event.target.checked)}
+            />
+            <span>Только избранное</span>
+          </label>
+        )}
+      </div>
 
-      {loading && <p>Загрузка...</p>}
-      {error && <p>{error}</p>}
+      {loading && <p className="state-message">Загрузка...</p>}
+      {error && <p className="state-message state-error">{error}</p>}
 
       {!loading && !error && organizations.length === 0 && (
-        <p>Ничего не найдено</p>
+        <p className="state-message">Ничего не найдено</p>
       )}
 
-      {organizations.map((organization) => (
-        <OrganizationCard
-          key={organization.id}
-          organization={organization}
-          favoriteId={favoriteMap[organization.id]}
-          onFavoriteChange={handleFavoriteChange}
-        />
-      ))}
+      {!loading && !error && organizations.length > 0 && (
+        <p className="results-count">Найдено организаций: {organizations.length}</p>
+      )}
+
+      <div className="card-grid">
+        {organizations.map((organization) => (
+          <OrganizationCard
+            key={organization.id}
+            organization={organization}
+            favoriteId={favoriteMap[organization.id]}
+            onFavoriteChange={handleFavoriteChange}
+          />
+        ))}
+      </div>
     </div>
   )
 }

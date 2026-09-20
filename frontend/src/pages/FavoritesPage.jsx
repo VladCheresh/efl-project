@@ -24,28 +24,35 @@ function FavoritesPage() {
     }
   }
 
-  if (loading) return <p>Загрузка...</p>
-  if (error) return <p>{error}</p>
+  if (loading) return <p className="state-message">Загрузка...</p>
+  if (error) return <p className="state-message state-error">{error}</p>
 
   return (
     <div>
-      <Link to="/">← Назад в каталог</Link>
-      <h1>Моё избранное</h1>
+      <section className="page-hero">
+        <h1>Моё избранное</h1>
+        <p className="page-subtitle">Организации, которые вы отметили сердечком</p>
+      </section>
 
       {favorites.length === 0 && (
-        <p>
-          В избранном пока пусто. <Link to="/">Перейти в каталог</Link>
-        </p>
+        <div className="empty-state">
+          <p>В избранном пока пусто.</p>
+          <Link to="/" className="btn btn-primary">
+            Перейти в каталог
+          </Link>
+        </div>
       )}
 
-      {favorites.map((favorite) => (
-        <OrganizationCard
-          key={favorite.id}
-          organization={favorite.organization_detail}
-          favoriteId={favorite.id}
-          onFavoriteChange={handleFavoriteChange}
-        />
-      ))}
+      <div className="card-grid">
+        {favorites.map((favorite) => (
+          <OrganizationCard
+            key={favorite.id}
+            organization={favorite.organization_detail}
+            favoriteId={favorite.id}
+            onFavoriteChange={handleFavoriteChange}
+          />
+        ))}
+      </div>
     </div>
   )
 }

@@ -37,50 +37,58 @@ function RegisterPage() {
   }
 
   return (
-    <div>
+    <div className="auth-card">
       <h1>Регистрация</h1>
+      <p className="auth-lead">Создайте аккаунт, чтобы вести своё избранное</p>
 
-      <form onSubmit={handleSubmit}>
-        <div>
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="field">
           <label htmlFor="username">Логин</label>
           <input
             id="username"
             type="text"
+            autoComplete="username"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
             required
           />
         </div>
 
-        <div>
+        <div className="field">
           <label htmlFor="password">Пароль</label>
           <input
             id="password"
             type="password"
+            autoComplete="new-password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             required
           />
         </div>
 
-        <div>
-          <label htmlFor="phone">Телефон</label>
+        <div className="field">
+          <label htmlFor="phone">Телефон (необязательно)</label>
           <input
             id="phone"
             type="tel"
+            autoComplete="tel"
             value={phone}
             onChange={(event) => setPhone(event.target.value)}
           />
         </div>
 
-        {error && <p>{error}</p>}
+        {error && (
+          <p className="form-error" role="alert">
+            {error}
+          </p>
+        )}
 
-        <button type="submit" disabled={submitting}>
+        <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
           {submitting ? 'Регистрируем...' : 'Зарегистрироваться'}
         </button>
       </form>
 
-      <p>
+      <p className="auth-switch">
         Уже есть аккаунт? <Link to="/login">Войти</Link>
       </p>
     </div>
