@@ -10,6 +10,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
+        ordering = ['name']
 
 
 class Organization(models.Model):
@@ -25,3 +26,4 @@ class Organization(models.Model):
     class Meta:
         verbose_name = "Организация"
         verbose_name_plural = "Организации"
+        ordering = ['name']
