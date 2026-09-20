@@ -148,7 +148,7 @@ npm run dev
 | `ALLOWED_HOSTS` | разрешённые хосты, через запятую |
 | `CORS_ALLOWED_ORIGINS` | адреса фронтенда, через запятую |
 | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | параметры базы (те же значения использует `docker-compose.yml`) |
-| `POSTGRES_HOST`, `POSTGRES_PORT` | адрес базы, по умолчанию `localhost:5432` |
+| `POSTGRES_HOST`, `POSTGRES_PORT` | адрес базы, по умолчанию `127.0.0.1:5432` |
 
 ## API
 
