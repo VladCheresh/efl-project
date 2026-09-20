@@ -1,0 +1,635 @@
+/* ==========================================================
+   Евпатория: ВДЖ — стили
+   Палитра взята из флага и герба города:
+   зелёный, жёлтый и красный. Основной акцент — тёмно-зелёный.
+   ========================================================== */
+
+:root {
+  /* цвета флага */
+  --flag-green: #00b42d;
+  --flag-yellow: #fefe00;
+  --flag-red: #f21400;
+
+  /* интерфейс */
+  --accent: #0b7a32;
+  --accent-hover: #086026;
+  --accent-soft: #e6f4ea;
+
+  --bg: #f4f7f3;
+  --surface: #ffffff;
+  --text: #1c2620;
+  --muted: #5d6b62;
+  --border: #dde4dd;
+
+  --danger: #b42318;
+  --danger-soft: #fdecea;
+
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(20, 40, 25, 0.06);
+  --shadow-hover: 0 6px 18px rgba(20, 40, 25, 0.12);
+  --container: 1100px;
+}
+
+/* ---------- Базовые стили ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.25;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--accent);
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+:focus-visible {
+  outline: 3px solid rgba(11, 122, 50, 0.45);
+  outline-offset: 2px;
+}
+
+/* ---------- Каркас страницы ---------- */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  flex: 1;
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 32px 20px 56px;
+}
+
+/* ---------- Шапка ---------- */
+
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 28px;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 12px 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brand:hover {
+  color: var(--text);
+}
+
+.brand-logo {
+  width: auto;
+  height: 48px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.brand-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.brand-subtitle {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.main-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-link {
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: var(--text);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+
+.nav-link.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  margin-left: auto;
+}
+
+.user-name {
+  max-width: 160px;
+  overflow: hidden;
+  font-weight: 600;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Трёхцветная полоса из цветов флага (пропорции 1 : 4 : 1, как на флаге) */
+.flag-stripe {
+  height: 12px;
+  background: linear-gradient(
+    to bottom,
+    var(--flag-green) 0 16.66%,
+    var(--flag-yellow) 16.66% 83.33%,
+    var(--flag-red) 83.33% 100%
+  );
+}
+
+/* ---------- Кнопки ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  color: #fff;
+}
+
+.btn-outline {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------- Заголовок страницы ---------- */
+
+.page-hero {
+  margin-bottom: 24px;
+}
+
+.page-hero h1 {
+  font-size: 2rem;
+}
+
+.page-subtitle {
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+/* ---------- Панель поиска и фильтров ---------- */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.search-input,
+.select,
+.field input {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.search-input {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.select {
+  flex: 0 1 260px;
+  min-width: 0;
+}
+
+.search-input:focus,
+.select:focus,
+.field input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(11, 122, 50, 0.18);
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.results-count {
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* ---------- Карточки организаций ---------- */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.card-body {
+  min-width: 0;
+}
+
+.card-title {
+  margin: 8px 0 10px;
+  font-size: 1.05rem;
+}
+
+.card-title a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.card-title a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.card-line {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.badge {
+  display: inline-block;
+  max-width: 100%;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* ---------- Кнопка «в избранное» ---------- */
+
+.favorite-btn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background-color 0.15s;
+}
+
+.favorite-btn:hover {
+  border-color: var(--flag-red);
+  color: var(--flag-red);
+}
+
+.favorite-btn.is-active {
+  border-color: var(--flag-red);
+  background: var(--danger-soft);
+  color: var(--flag-red);
+}
+
+.favorite-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* ---------- Страница организации ---------- */
+
+.detail {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 18px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.detail-title {
+  margin-top: 10px;
+  font-size: 1.7rem;
+}
+
+.info-list {
+  margin: 24px 0;
+  border-top: 1px solid var(--border);
+}
+
+.info-row {
+  display: flex;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-row dt {
+  flex: 0 0 110px;
+  color: var(--muted);
+}
+
+.info-row dd {
+  margin: 0;
+  font-weight: 500;
+}
+
+.detail-description {
+  white-space: pre-line;
+}
+
+/* ---------- Вход и регистрация ---------- */
+
+.auth-card {
+  max-width: 420px;
+  margin: 16px auto 0;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.auth-card h1 {
+  font-size: 1.6rem;
+}
+
+.auth-lead {
+  margin: 6px 0 20px;
+  color: var(--muted);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.form-error {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 0.95rem;
+}
+
+.auth-switch {
+  margin-top: 18px;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* ---------- Состояния: загрузка, ошибка, пусто ---------- */
+
+.state-message {
+  padding: 24px 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+.state-error {
+  color: var(--danger);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 20px;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+}
+
+/* ---------- Подвал ---------- */
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 16px 20px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.footer-flag {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+/* ---------- Узкие экраны ---------- */
+
+@media (max-width: 640px) {
+  .container {
+    padding: 24px 16px 40px;
+  }
+
+  .header-inner {
+    gap: 8px 12px;
+    padding: 10px 16px;
+  }
+
+  .brand-logo {
+    height: 40px;
+  }
+
+  .nav-link {
+    padding: 6px 10px;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .header-actions .btn {
+    padding: 7px 12px;
+  }
+
+  .user-name {
+    max-width: 90px;
+  }
+
+  .select {
+    flex: 1 1 100%;
+  }
+
+  .page-hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .detail,
+  .auth-card {
+    padding: 20px;
+  }
+
+  .detail-title {
+    font-size: 1.4rem;
+  }
+
+  .info-row {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .info-row dt {
+    flex: none;
+  }
+}
