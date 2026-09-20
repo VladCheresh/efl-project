@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, password_validation
 from rest_framework import serializers
 
 
@@ -14,6 +14,10 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
+    def validate_password(self, value):
+        password_validation.validate_password(value)
+        return value
 
 
 class UserSerializer(serializers.ModelSerializer):
