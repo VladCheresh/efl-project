@@ -1,11 +1,15 @@
 from rest_framework import serializers
 from .models import Favorite
+from organizations.serializers import OrganizationSerializer
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
+    organization_detail = OrganizationSerializer(source='organization',
+                                                 read_only=True)
+
     class Meta:
         model = Favorite
-        fields = ['id', 'organization', 'created_at']
+        fields = ['id', 'organization', 'organization_detail', 'created_at']
         read_only_fields = ['created_at']
 
     def validate(self, attrs):
