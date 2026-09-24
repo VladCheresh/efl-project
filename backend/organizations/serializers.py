@@ -19,10 +19,14 @@ class OrganizationSerializer(serializers.ModelSerializer):
                   'phone', 'description', 'is_favorite']
 
     def get_is_favorite(self, obj):
+        """Есть ли организация в избранном у текущего пользователя."""
         request = self.context.get('request')
         if not (request and request.user.is_authenticated):
             return False
         if not hasattr(request, '_favorite_ids'):
+            # Кеш на request: он один на весь HTTP-запрос, поэтому список
+            # организаций делает один запрос к БД вместо запроса на каждую
+            # организацию (проблема N+1) и не устаревает между запросами.
             request._favorite_ids = set(
                 request.user.favorites.values_list('organization_id',
                                                    flat=True)

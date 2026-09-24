@@ -10,14 +10,25 @@ class OrganizationFilter(FilterSet):
     is_favorite = BooleanFilter(method='filter_is_favorite')
 
     def filter_search(self, queryset, name, value):
+        """Поиск по названию и адресу организации."""
+        # icontains делает поиск регистронезависимым.
+        # При использовании SQLite это не работало с кириллицей.
+        # Переход на PostgreSQL позволил обойти этот недостаток.
         return queryset.filter(
             models.Q(name__icontains=value) |
             models.Q(address__icontains=value)
         )
 
     def filter_is_favorite(self, queryset, name, value):
+        """Поиск по избранному.
+
+        Возвращает избранное при true, остальное при false.
+        """
         user = self.request.user
         if not user.is_authenticated:
+            # У анонимного пользователя избранного нет:
+            # для true список пустой,
+            # для false подходят все организации.
             return queryset.none() if value else queryset
 
         if value:

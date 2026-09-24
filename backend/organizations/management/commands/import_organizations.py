@@ -13,37 +13,46 @@ class Command(BaseCommand):
         parser.add_argument('csv_path', type=str, help='Путь к CSV-файлу')
 
     def handle(self, *args, **options):
+        """Читает CSV и создаёт категории и организации.
+
+        Команду можно запускать повторно: уже существующие организации
+        пропускаются, дубли не создаются.
+        """
         csv_path = options['csv_path']
-
-        try:
-            file = open(csv_path, encoding='utf-8')
-        except FileNotFoundError:
-            raise CommandError(f'Файл не найден: {csv_path}')
-
-        reader = csv.DictReader(file)
         created_count = 0
         skipped_count = 0
 
-        for row in reader:
-            category_name = row['category'].strip()
-            category, _ = Category.objects.get_or_create(name=category_name)
+        try:
+            # with закрывает файл сам, даже если импорт упадёт с ошибкой
+            with open(csv_path, encoding='utf-8') as file:
+                reader = csv.DictReader(file)
 
-            organization, created = Organization.objects.get_or_create(
-                name=row['name'].strip(),
-                address=row['address'].strip(),
-                defaults={
-                    'category': category,
-                    'phone': row['phone'].strip(),
-                    'description': row['description'].strip(),
-                },
-            )
+                for row in reader:
+                    category_name = row['category'].strip()
+                    category, _ = Category.objects.get_or_create(
+                        name=category_name
+                    )
 
-            if created:
-                created_count += 1
-            else:
-                skipped_count += 1
+                    # Организация ищется по паре name + address,
+                    # поэтому повторный запуск её не дублирует.
+                    # Остальные поля лежат в defaults
+                    # и применяются только при создании записи.
+                    _, created = Organization.objects.get_or_create(
+                        name=row['name'].strip(),
+                        address=row['address'].strip(),
+                        defaults={
+                            'category': category,
+                            'phone': row['phone'].strip(),
+                            'description': row['description'].strip(),
+                        },
+                    )
 
-        file.close()
+                    if created:
+                        created_count += 1
+                    else:
+                        skipped_count += 1
+        except FileNotFoundError:
+            raise CommandError(f'Файл не найден: {csv_path}')
 
         self.stdout.write(
             self.style.SUCCESS(

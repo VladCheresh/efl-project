@@ -13,8 +13,11 @@ class FavoriteSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at']
 
     def validate(self, attrs):
+        """Не дает добавить одну организацию в избранное дважды"""
         request = self.context.get('request')
         organization = attrs.get('organization')
+        # unique_together включает user, которого нет в полях сериализатора
+        # поэтому DRF не проверяет пару сам и дубль приходится искать вручную
         if request and Favorite.objects.filter(
             user=request.user, organization=organization
         ).exists():
