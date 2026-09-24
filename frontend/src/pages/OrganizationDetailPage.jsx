@@ -9,6 +9,8 @@ function OrganizationDetailPage() {
   const { id } = useParams()
   const { user } = useAuth()
   const [org, setOrg] = useState(null)
+  // id записи в избранном (null, если организации там нет):
+  // нужен для удаления
   const [favoriteId, setFavoriteId] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -17,6 +19,8 @@ function OrganizationDetailPage() {
     setLoading(true)
     setError('')
 
+    // Как и в каталоге:
+    // организация и (для вошедшего) его избранное грузятся параллельно
     const requests = [getOrganization(id)]
     if (user) requests.push(getFavorites())
 
@@ -25,6 +29,8 @@ function OrganizationDetailPage() {
         setOrg(orgResponse.data)
         if (favResponse) {
           const favorites = favResponse.data.results ?? favResponse.data
+          // id из адреса приходит строкой,
+          // а favorite.organization числом
           const found = favorites.find((f) => f.organization === Number(id))
           setFavoriteId(found ? found.id : null)
         }

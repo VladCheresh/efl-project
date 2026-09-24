@@ -9,6 +9,8 @@ import SearchBar from '../components/SearchBar'
 function CatalogPage() {
   const [organizations, setOrganizations] = useState([])
   const [categories, setCategories] = useState([])
+  // Соответствие «id организации → id записи в избранном»:
+  // оно нужно кнопке-сердечку, чтобы удалить именно эту запись
   const [favoriteMap, setFavoriteMap] = useState({})
   const [category, setCategory] = useState('')
   const [search, setSearch] = useState('')
@@ -18,12 +20,20 @@ function CatalogPage() {
 
   const { user } = useAuth()
 
+  // response.data.results ?? response.data:
+  // подстраховка на случай,
+  // если в DRF включим пагинацию.
+  // Сейчас она выключена, приходит обычный список.
   useEffect(() => {
     getCategories()
       .then((response) => setCategories(response.data.results ?? response.data))
+      // при сбое просто не будет фильтра по категориям, каталог работает
       .catch(() => {})
   }, [])
 
+  // useCallback:
+  // функция пересоздается только при смене фильтров или пользователя,
+  // а useEffect ниже перезагружает список сразу после этого
   const loadOrganizations = useCallback(() => {
     setLoading(true)
     setError('')
@@ -33,6 +43,9 @@ function CatalogPage() {
     if (search) params.search = search
     if (user && onlyFavorites) params.is_favorite = true
 
+    // Список организаций уже содержит is_favorite,
+    // но не id записи избранного, который нужен для удаления.
+    // Поэтому вошедшему пользователю параллельно грузим и его избранное.
     const requests = [getOrganizations(params)]
     if (user) {
       requests.push(getFavorites())
@@ -61,12 +74,14 @@ function CatalogPage() {
     loadOrganizations()
   }, [loadOrganizations])
 
+  // Сердечко обновляем локально, без повторной загрузки всего списка
   const handleFavoriteChange = (organizationId, isFavorite, favoriteId) => {
     setOrganizations((prev) => {
       const updated = prev.map((org) =>
         org.id === organizationId ? { ...org, is_favorite: isFavorite } : org
       )
-      // если включён режим "только избранное" и юзер убрал сердечко — сразу убираем карточку из списка
+      // если включен режим "только избранное" и пользователь убрал сердечко —
+      // сразу убираем карточку из списка
       return onlyFavorites ? updated.filter((org) => org.is_favorite) : updated
     })
     setFavoriteMap((prev) => {
@@ -80,7 +95,7 @@ function CatalogPage() {
     })
   }
 
-    return (
+  return (
     <div>
       <section className="page-hero">
         <h1>Каталог организаций</h1>

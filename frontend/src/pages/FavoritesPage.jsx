@@ -16,6 +16,8 @@ function FavoritesPage() {
       .finally(() => setLoading(false))
   }, [])
 
+  // Когда сердечко снято, карточка сразу исчезает из списка,
+  // без повторного запроса к серверу
   const handleFavoriteChange = (organizationId, isFavorite) => {
     if (!isFavorite) {
       setFavorites((prev) =>
