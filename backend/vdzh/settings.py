@@ -6,18 +6,28 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Переменные окружения (ключ, БД, хосты) читаются из .env
+# Сам .env в репозиторий не попадет, а шаблон лежит в .env.example
 load_dotenv(BASE_DIR / '.env')
 
 
+# Значения по умолчанию нет намеренно:
+# без ключа в .env Django не запустится,
+# а не заработает с небезопасным запасным ключом.
 SECRET_KEY = os.environ.get(
     'SECRET_KEY',
 )
 
+# По умолчанию отладка выключена:
+# включить ее можно только явной строкой DEBUG=True в .env
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
+# Хосты, с которых Django принимает запросы.
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS',
                                'localhost,127.0.0.1').split(',')
 
+# Адреса фронтенда, которым браузер разрешает обращаться к API
+# (иначе он блокирует запросы с другого порта, см. CORS).
 CORS_ALLOWED_ORIGINS = os.environ.get(
     'CORS_ALLOWED_ORIGINS',
     'http://localhost:5173,http://127.0.0.1:5173',
@@ -75,6 +85,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'vdzh.wsgi.application'
 
 
+# Параметры БД берутся из окружения.
+# По умолчанию 127.0.0.1, а не localhost:
+# на Windows localhost подвисал из-за IPv6.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -86,12 +99,16 @@ DATABASES = {
     }
 }
 
+# JWT как единственный способ аутентификации:
+# клиент передает токен в заголовке 'Authorization: Bearer <access>'.
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
 
+# Access-токен живет 30 минут, чтобы украденный быстро устарел.
+# Refresh-токен живет дольше (7 дней), чтобы не входить заново каждый раз.
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -112,6 +129,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Своя модель пользователя (добавлено поле phone).
+# Подменять её нужно до первой миграции, иначе базу приходится пересоздавать.
 AUTH_USER_MODEL = 'accounts.User'
 
 LANGUAGE_CODE = 'ru-ru'
