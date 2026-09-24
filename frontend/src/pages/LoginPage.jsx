@@ -1,21 +1,22 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-
+import PasswordInput from '../components/PasswordInput'
+ 
 function LoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
-
+ 
   const { login } = useAuth()
   const navigate = useNavigate()
-
+ 
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
     setSubmitting(true)
-
+ 
     try {
       await login(username, password)
       navigate('/')
@@ -25,12 +26,12 @@ function LoginPage() {
       setSubmitting(false)
     }
   }
-
+ 
   return (
     <div className="auth-card">
       <h1>Вход</h1>
       <p className="auth-lead">Войдите, чтобы добавлять организации в избранное</p>
-
+ 
       <form className="form" onSubmit={handleSubmit}>
         <div className="field">
           <label htmlFor="username">Логин</label>
@@ -43,35 +44,32 @@ function LoginPage() {
             required
           />
         </div>
-
-        <div className="field">
-          <label htmlFor="password">Пароль</label>
-          <input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
-        </div>
-
+ 
+        <PasswordInput
+          id="password"
+          label="Пароль"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          autoComplete="current-password"
+        />
+ 
         {error && (
           <p className="form-error" role="alert">
             {error}
           </p>
         )}
-
+ 
         <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
           {submitting ? 'Входим...' : 'Войти'}
         </button>
       </form>
-
+ 
       <p className="auth-switch">
         Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
       </p>
     </div>
   )
 }
-
+ 
 export default LoginPage
+ 

@@ -512,6 +512,42 @@ a:hover {
   font-size: 0.95rem;
 }
 
+/* Поле пароля с кнопкой «Показать» */
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input {
+  width: 100%;
+  padding-right: 96px; /* место под кнопку, чтобы текст не заезжал под неё */
+}
+
+/* Edge на Windows рисует свой «глазок» в поле пароля, он дублировал бы нашу кнопку */
+.password-wrap input::-ms-reveal {
+  display: none;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+
 .form-error {
   padding: 10px 14px;
   border-radius: 8px;
