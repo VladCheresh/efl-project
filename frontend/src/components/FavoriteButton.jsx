@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { addFavorite, removeFavorite } from '../api/favorites'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 
 function FavoriteButton({ organizationId, isFavorite, favoriteId, onChange }) {
   // pending блокирует кнопку на время запроса,

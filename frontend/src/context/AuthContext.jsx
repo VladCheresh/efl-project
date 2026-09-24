@@ -1,7 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { AuthContext } from './AuthContext'
 import { login as loginRequest, getMe } from '../api/auth'
-
-const AuthContext = createContext(null)
 
 // Хранит текущего пользователя и дает всему приложению:
 // login, logout и признак загрузки через useAuth().
@@ -10,14 +9,15 @@ export function AuthProvider({ children }) {
   // Пока true, ещё неизвестно, вошел ли пользователь.
   // PrivateRoute ждёт этого признака,
   // чтобы не отправить на /login раньше времени.
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(
+    () => Boolean(localStorage.getItem('access'))
+  )
 
   // Восстанавливаем вход после перезагрузки страницы:
   // токен лежит в localStorage, по нему запрашиваем данные пользователя.
   useEffect(() => {
     const token = localStorage.getItem('access')
     if (!token) {
-      setLoading(false)
       return
     }
 
@@ -55,8 +55,4 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   )
-}
-
-export function useAuth() {
-  return useContext(AuthContext)
 }

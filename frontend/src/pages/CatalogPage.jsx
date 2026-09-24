@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { getOrganizations, getCategories } from '../api/organizations'
 import { getFavorites } from '../api/favorites'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import OrganizationCard from '../components/OrganizationCard'
 import CategoryFilter from '../components/CategoryFilter'
 import SearchBar from '../components/SearchBar'
@@ -15,11 +15,21 @@ function CatalogPage() {
   const [category, setCategory] = useState('')
   const [search, setSearch] = useState('')
   const [onlyFavorites, setOnlyFavorites] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  // Ключ текущего успешно завершённого запроса.
+  // Используется для определения состояния загрузки.
+  const [loadedKey, setLoadedKey] = useState(null)
+  const [errorState, setErrorState] = useState({
+    key: null,
+    message: '',
+  })
 
   const { user } = useAuth()
 
+  const requestKey = `${user?.id ?? 'guest'}:${category}:${search}:${user ? onlyFavorites : false}`
+
+  const loading = loadedKey !== requestKey
+  const error =
+    errorState.key === requestKey ? errorState.message : ''
   // response.data.results ?? response.data:
   // подстраховка на случай,
   // если в DRF включим пагинацию.
@@ -31,48 +41,68 @@ function CatalogPage() {
       .catch(() => {})
   }, [])
 
-  // useCallback:
-  // функция пересоздается только при смене фильтров или пользователя,
-  // а useEffect ниже перезагружает список сразу после этого
-  const loadOrganizations = useCallback(() => {
-    setLoading(true)
-    setError('')
+  // Загружаем организации при изменении фильтров или пользователя.
+  // При наличии авторизации дополнительно получаем список избранного.
+  useEffect(() => {
+    let cancelled = false
 
     const params = {}
+
     if (category) params.category = category
     if (search) params.search = search
     if (user && onlyFavorites) params.is_favorite = true
 
-    // Список организаций уже содержит is_favorite,
-    // но не id записи избранного, который нужен для удаления.
-    // Поэтому вошедшему пользователю параллельно грузим и его избранное.
     const requests = [getOrganizations(params)]
+
     if (user) {
       requests.push(getFavorites())
     }
 
     Promise.all(requests)
       .then(([orgResponse, favResponse]) => {
-        setOrganizations(orgResponse.data.results ?? orgResponse.data)
+        if (cancelled) return
+
+        setOrganizations(
+          orgResponse.data.results ?? orgResponse.data
+        )
 
         if (favResponse) {
-          const favorites = favResponse.data.results ?? favResponse.data
+          const favorites =
+            favResponse.data.results ?? favResponse.data
+
           const map = {}
+
           favorites.forEach((favorite) => {
             map[favorite.organization] = favorite.id
           })
+
           setFavoriteMap(map)
         } else {
           setFavoriteMap({})
         }
-      })
-      .catch(() => setError('Не удалось загрузить организации'))
-      .finally(() => setLoading(false))
-  }, [category, search, onlyFavorites, user])
 
-  useEffect(() => {
-    loadOrganizations()
-  }, [loadOrganizations])
+        setErrorState({
+          key: null,
+          message: '',
+        })
+
+        setLoadedKey(requestKey)
+      })
+      .catch(() => {
+        if (cancelled) return
+
+        setErrorState({
+          key: requestKey,
+          message: 'Не удалось загрузить организации',
+        })
+
+        setLoadedKey(requestKey)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [category, search, onlyFavorites, user, requestKey])
 
   // Сердечко обновляем локально, без повторной загрузки всего списка
   const handleFavoriteChange = (organizationId, isFavorite, favoriteId) => {

@@ -2,41 +2,81 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getOrganization } from '../api/organizations'
 import { getFavorites } from '../api/favorites'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import FavoriteButton from '../components/FavoriteButton'
 
 function OrganizationDetailPage() {
-  const { id } = useParams()
-  const { user } = useAuth()
   const [org, setOrg] = useState(null)
   // id записи в избранном (null, если организации там нет):
   // нужен для удаления
   const [favoriteId, setFavoriteId] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  // ID организации, для которой успешно завершилась загрузка.
+  const [loadedId, setLoadedId] = useState(null)
+  const [errorState, setErrorState] = useState({
+    id: null,
+    message: '',
+  })
+  const { id } = useParams()
+  const { user } = useAuth()
+
+  const currentId = Number(id)
+
+  const loading =
+    loadedId !== currentId && errorState.id !== currentId
+
+  const error =
+    errorState.id === currentId ? errorState.message : ''
 
   useEffect(() => {
-    setLoading(true)
-    setError('')
+    let cancelled = false
 
-    // Как и в каталоге:
-    // организация и (для вошедшего) его избранное грузятся параллельно
+    // Загружаем данные организации и ее избранное.
+    // При смене организации или пользователя выполняем новый запрос.
     const requests = [getOrganization(id)]
-    if (user) requests.push(getFavorites())
+
+    if (user) {
+      requests.push(getFavorites())
+    }
 
     Promise.all(requests)
       .then(([orgResponse, favResponse]) => {
+        if (cancelled) return
+
         setOrg(orgResponse.data)
+
         if (favResponse) {
-          const favorites = favResponse.data.results ?? favResponse.data
+          const favorites =
+            favResponse.data.results ?? favResponse.data
           // id из адреса приходит строкой,
           // а favorite.organization числом
-          const found = favorites.find((f) => f.organization === Number(id))
+          const found = favorites.find(
+            (favorite) => favorite.organization === Number(id)
+          )
           setFavoriteId(found ? found.id : null)
+        } else {
+          setFavoriteId(null)
         }
+
+        setErrorState({
+          id: null,
+          message: '',
+        })
+
+        setLoadedId(Number(id))
       })
-      .catch(() => setError('Не удалось загрузить организацию'))
-      .finally(() => setLoading(false))
+      .catch(() => {
+        if (cancelled) return
+
+        setErrorState({
+          id: Number(id),
+          message: 'Не удалось загрузить организацию'
+        })
+
+        setLoadedId(Number(id))
+      })
+    return () => {
+      cancelled = true
+    }
   }, [id, user])
 
   const handleFavoriteChange = (organizationId, isFavorite, newFavoriteId) => {
