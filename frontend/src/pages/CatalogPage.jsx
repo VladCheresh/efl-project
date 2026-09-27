@@ -30,6 +30,7 @@ function CatalogPage() {
   const loading = loadedKey !== requestKey
   const error =
     errorState.key === requestKey ? errorState.message : ''
+
   // response.data.results ?? response.data:
   // подстраховка на случай,
   // если в DRF включим пагинацию.

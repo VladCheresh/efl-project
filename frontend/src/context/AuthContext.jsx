@@ -6,7 +6,8 @@ import { login as loginRequest, getMe } from '../api/auth'
 // login, logout и признак загрузки через useAuth().
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
-  // Пока true, ещё неизвестно, вошел ли пользователь.
+  // Если токен в localStorage есть, ждём ответа getMe() (loading = true).
+  // Если токена нет, ждать нечего: вход и так не выполнен, сразу false.
   // PrivateRoute ждёт этого признака,
   // чтобы не отправить на /login раньше времени.
   const [loading, setLoading] = useState(
