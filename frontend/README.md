@@ -1,16 +1,36 @@
-# React + Vite
+# Фронтенд: Евпатория: ВДЖ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React-приложение каталога организаций. Общее описание проекта, запуск бэкенда и базы данных находятся в [основном README](../README.md).
 
-Currently, two official plugins are available:
+## Запуск
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+Сайт откроется на http://localhost:5173. Бэкенд должен быть запущен на http://127.0.0.1:8000.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Команды
 
-## Expanding the ESLint configuration
+| Команда | Что делает |
+|---------|-----------|
+| `npm run dev` | сервер разработки Vite |
+| `npm run build` | продакшен-сборка в папку `dist` |
+| `npm run preview` | локальный просмотр собранной версии |
+| `npm run lint` | проверка кода ESLint |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Переменные окружения
+
+`VITE_API_URL` — адрес API бэкенда. Подставляется при сборке. Если не задана, используется `http://127.0.0.1:8000/api`.
+
+## Маршруты
+
+| Адрес | Страница | Доступ |
+|-------|----------|--------|
+| `/` | каталог организаций | все |
+| `/organizations/:id` | страница организации | все |
+| `/login` | вход | все |
+| `/register` | регистрация | все |
+| `/favorites` | «Моё избранное» | только авторизованные |
+| любой другой | сообщение «Страница не найдена» со ссылкой в каталог | все |
