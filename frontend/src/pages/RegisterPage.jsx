@@ -33,7 +33,7 @@ function RegisterPage() {
     } catch (err) {
       const data = err.response?.data
       if (data?.username) {
-        setError('Такой логин уже занят')
+        setError(data.username.join(' '))
       } else if (data?.password) {
         setError(data.password.join(' '))
       } else {
